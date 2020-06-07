@@ -1,6 +1,6 @@
 package utils;
 
-public class ECC implements Constants {
+public class ECC {
 	
 	private static byte[] parity_table = new byte[256];
 	private static byte[] column_parity_masks = new byte[256];
