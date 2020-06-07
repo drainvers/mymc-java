@@ -2,10 +2,10 @@ package utils;
 
 public class ECC {
 	
-	private static byte[] parity_table = new byte[256];
-	private static byte[] column_parity_masks = new byte[256];
+	private byte[] parity_table;
+	private byte[] column_parity_masks;
 	
-	private static int popcount(byte a) {
+	private int popcount(byte a) {
 		int count = 0;
 		
 		while (a != 0) {
@@ -16,7 +16,7 @@ public class ECC {
 		return count;
 	}
 	
-	private static byte parityb(byte a) {
+	private byte parityb(byte a) {
 		a = (byte) (a ^ (a >> 1));
 		a = (byte) (a ^ (a >> 2));
 		a = (byte) (a ^ (a >> 4));
@@ -24,7 +24,7 @@ public class ECC {
 		return a;
 	}
 	
-	private static void make_ecc_table() {
+	private void make_ecc_table() {
 		byte[] cpmasks = {0x55, 0x33, 0x0F, 0x00, (byte) 0xAA, (byte) 0xCC, (byte) 0xF0};
 		
 		for (int b = 0; b < 256; ++b)
@@ -40,7 +40,7 @@ public class ECC {
 		}
 	}
 	
-	public static byte[] ecc_calculate(byte[] s) {
+	public byte[] ecc_calculate(byte[] s) {
 		/* Calculate the Hamming code for a byte array. */
 		byte column_parity = 0x77;
 		byte line_parity_0 = 0x7F;
@@ -59,12 +59,12 @@ public class ECC {
 		return new byte[]{column_parity, (byte) (line_parity_0 & 0x7F), line_parity_1};
 	}
 	
-	public static byte[] ecc_calculate(String s) {
+	public byte[] ecc_calculate(String s) {
 		/* Calculate the Hamming code for a 128 byte long string. */
 		return ecc_calculate(s.getBytes());
 	}
 	
-	public static ECCFlags ecc_check(byte[] s, byte[] ecc) {
+	public ECCFlags ecc_check(byte[] s, byte[] ecc) {
 		/*
 		 * Detect and correct any single bit errors.
 		 * 
@@ -107,13 +107,15 @@ public class ECC {
 		return ECCFlags.ECC_CHECK_FAILED;
 	}
 	
-	public static byte[][] ecc_calculate_page() {
+	public byte[][] ecc_calculate_page() {
 		/* Return a list of the ECC codes for a PS2 memory card page. */
 		
 		return new byte[1][1]; // Temporary stub
 	}
 	
 	public ECC() {
+		parity_table = new byte[256];
+		column_parity_masks = new byte[256];
 		make_ecc_table();
 	}
 
