@@ -1,8 +1,8 @@
 package mc;
 
-public class PS2MemoryCard {
+public class PS2MC {
 	
-	public PS2MemoryCard() {
+	public PS2MC() {
 		// TODO Auto-generated constructor stub
 	}
 

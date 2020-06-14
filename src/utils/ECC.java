@@ -6,6 +6,19 @@ public class ECC {
 	
 	private byte[] parity_table;
 	private byte[] column_parity_masks;
+	private static ECC instance;
+	
+	private ECC() {
+		parity_table = new byte[256];
+		column_parity_masks = new byte[256];
+		make_ecc_table();
+	}
+	
+	public static ECC getInstance() {
+		if (instance == null)
+			return new ECC();
+		return instance;
+	}
 	
 	private int popcount(byte a) {
 		int count = 0;
@@ -110,12 +123,6 @@ public class ECC {
 		
 		// Uncorrectable error
 		return ECCFlags.ECC_CHECK_FAILED;
-	}
-	
-	public ECC() {
-		parity_table = new byte[256];
-		column_parity_masks = new byte[256];
-		make_ecc_table();
 	}
 
 }
