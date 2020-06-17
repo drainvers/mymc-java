@@ -45,11 +45,11 @@ public class ECC {
 			parity_table[b] = parityb((byte) b);
 		
 		for (int b = 0; b < 256; ++b) {
-			int mask = 0;
+			byte mask = 0;
 			
 			for (int i = 0; i < cpmasks.length; ++i) {
 				mask |= parity_table[b & cpmasks[i]] << i;
-				column_parity_masks[b] = (byte) mask;
+				column_parity_masks[b] = mask;
 			}
 		}
 	}
@@ -63,9 +63,9 @@ public class ECC {
 		byte line_parity_1 = 0x7F;
 		
 		for (int i = 0; i < s.length; ++i) {
-			int b = s[i] & 0xFF;
+			int b = Byte.toUnsignedInt(s[i]);
 			column_parity ^= column_parity_masks[b];
-			if (parity_table[b] != 0) {
+			if (parity_table[b] == 1) {
 				line_parity_0 ^= ~i;
 				line_parity_1 ^= i;
 			}
@@ -123,6 +123,16 @@ public class ECC {
 		
 		// Uncorrectable error
 		return ECCFlags.ECC_CHECK_FAILED;
+	}
+	
+	public byte[][] ecc_calculate_page(byte[] page) {
+		int ecc_page_length = Round.div_round_up(page.length, 128);
+		byte[][] ecc_page = new byte[ecc_page_length][];
+		
+		for (int i = 0; i < ecc_page_length; ++i)
+			ecc_page[i] = ecc_calculate(Arrays.copyOfRange(page, (i * 128), (i * 128 + 128)));
+		
+		return ecc_page;
 	}
 
 }
